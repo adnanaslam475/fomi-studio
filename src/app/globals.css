@@ -1,26 +1,313 @@
 @import "tailwindcss";
 
+/* =========================================================================
+   Fomi Studio — design tokens
+   A warm, light creative workspace. Cream canvas, white cards, coral accent.
+   ========================================================================= */
+@theme {
+  /* Surfaces & canvas */
+  --color-canvas: #f1e7de;
+  --color-canvas-2: #f6efe8;
+  --color-wash: #f8e6da;
+  --color-surface: #ffffff;
+  --color-surface-2: #fbf6f1;
+  --color-surface-3: #f3ebe3;
+
+  /* Text */
+  --color-ink: #2a2420;
+  --color-ink-2: #6b6158;
+  --color-ink-3: #9d9289;
+  --color-ink-inv: #fdf9f5;
+
+  /* Lines */
+  --color-line: #ebe0d5;
+  --color-line-2: #e0d2c3;
+
+  /* Brand — coral / peach */
+  --color-coral: #e78a66;
+  --color-coral-600: #db7850;
+  --color-coral-700: #c9643d;
+  --color-coral-soft: #fbe7dc;
+  --color-coral-wash: #fdf1ea;
+  --color-amber: #e9954c;
+
+  /* Status */
+  --color-good: #4f9f86;
+  --color-danger: #d9684f;
+
+  /* Radii */
+  --radius-sm: 0.625rem; /* 10 */
+  --radius-md: 0.875rem; /* 14 */
+  --radius-lg: 1.25rem; /* 20 */
+  --radius-xl: 1.625rem; /* 26 */
+  --radius-2xl: 2rem; /* 32 */
+
+  /* Fonts (wired in layout.js via next/font) */
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(42, 36, 32, 0.05);
+  --shadow-sm: 0 1px 3px rgba(42, 36, 32, 0.06), 0 1px 2px rgba(42, 36, 32, 0.04);
+  --shadow-md: 0 6px 20px rgba(42, 36, 32, 0.08), 0 1px 3px rgba(42, 36, 32, 0.05);
+  --shadow-lg: 0 16px 44px rgba(42, 36, 32, 0.13), 0 4px 12px rgba(42, 36, 32, 0.07);
+  --shadow-coral: 0 10px 26px rgba(231, 138, 102, 0.4);
+
+  /* Easing */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* =========================================================================
+   Base
+   ========================================================================= */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  border-color: var(--color-line);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-canvas);
+  background-image:
+    radial-gradient(120% 70% at 85% -10%, rgba(248, 211, 189, 0.6) 0%, rgba(248, 211, 189, 0) 55%),
+    radial-gradient(90% 60% at 5% 0%, rgba(247, 230, 218, 0.7) 0%, rgba(247, 230, 218, 0) 50%);
+  background-attachment: fixed;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv11", "ss01";
+}
+
+::selection {
+  background: var(--color-coral-soft);
+  color: var(--color-coral-700);
+}
+
+/* Focus — visible, on-brand, never on mouse clicks */
+:where(a, button, input, textarea, select, [tabindex], [role="button"], [role="tab"], [role="option"]):focus-visible {
+  outline: 2px solid var(--color-coral);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Respect reduced motion everywhere */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================================
+   Scrollbars — thin & warm
+   ========================================================================= */
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-2) transparent;
+}
+.scroll-thin::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: var(--color-line-2);
+  border-radius: 999px;
+}
+.scroll-thin::-webkit-scrollbar-thumb:hover {
+  background: #d3c2b1;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================================================================
+   Reusable component classes (kept small; most styling is Tailwind utilities)
+   ========================================================================= */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.surface-inset {
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-line);
+}
+
+/* Shimmer / skeleton */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-3);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.65),
+    transparent
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+/* =========================================================================
+   Keyframes
+   ========================================================================= */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(8px);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bar-indeterminate {
+  0% {
+    left: -40%;
+    width: 40%;
+  }
+  50% {
+    width: 55%;
+  }
+  100% {
+    left: 100%;
+    width: 40%;
+  }
+}
+
+@keyframes sheen {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+/* =========================================================================
+   Animation utilities
+   ========================================================================= */
+.animate-fade-up {
+  animation: fade-up 0.5s var(--ease-out-soft) both;
+}
+.animate-scale-in {
+  animation: scale-in 0.4s var(--ease-out-soft) both;
+}
+.animate-pop-in {
+  animation: pop-in 0.5s var(--ease-spring) both;
+}
+.animate-float-soft {
+  animation: float-soft 5s ease-in-out infinite;
+}
+.animate-breathe {
+  animation: breathe 3.6s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: spin 1s linear infinite;
+}
+
+/* Staggered reveal helper (set --i on the element) */
+.stagger {
+  animation-delay: calc(var(--i, 0) * 60ms);
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(100deg, var(--color-coral-700), var(--color-amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Tabular numbers for metrics */
+.nums {
+  font-variant-numeric: tabular-nums;
 }
